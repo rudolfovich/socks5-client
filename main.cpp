@@ -12,16 +12,18 @@ int main(int argc, char *argv[])
 
   try
   {
-    ClientTcp conn(Ipv4(192,168,1,101,1080));
+    const auto proxy(Ipv4(192,168,1,101,1080));
+    const auto target(Ipv4(192,168,0,176,8899));
     Ipv4Address binded = {};
-    conn.Connect(Ipv4(192,168,0,176,8899), binded);
-    conn.Send("\n\n === Hello, Valdemar! === \n\n");
-    conn.Disconnect();
+    ClientTcp socks5;
+
+    socks5.Connect(proxy, target, binded);
+    socks5.Send("\n\n === Hello, Valdemar! === \n\n");
+    socks5.Disconnect();
   }
   catch (const ErrorGeneric &ex)
   {
-    string s(ex.what());
-    cout << "Error: " << s << endl;
+    cout << "Error: " << ex.what() << endl;
     return 1;
   }
   return 0;
